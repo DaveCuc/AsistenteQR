@@ -5,7 +5,7 @@ const video = document.createElement("video");
 const canvasElement = document.getElementById("qr-canvas");
 const canvas = canvasElement.getContext("2d");
 
-// Div donde llegara nuestro canvas
+// Div donde llegará nuestro canvas
 const btnScanQR = document.getElementById("btn-scan-qr");
 
 // Lectura desactivada
@@ -63,44 +63,23 @@ const activarSonido = () => {
 // Callback cuando termina de leer el código QR
 qrcode.callback = (respuesta) => {
   if (respuesta) {
-    // Mostrar el código QR escaneado (para verificar)
-    Swal.fire({
-      title: '¿Registrar asistencia?',
-      text: "¿Deseas registrar tu asistencia con este código QR?",
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Registrar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Si el usuario confirma, redirige con el parámetro de contraseña
-        registrarAsistencia(respuesta);
-      } else {
-        // Si cancela, apaga la cámara
-        cerrarCamara();
-      }
-    });
-
     // Reproducir el sonido de escaneo
     activarSonido();
 
     // Apagar la cámara después de escanear
     cerrarCamara();
+
+    // Asegúrate de que la URL contenida en el QR esté en el formato correcto
+    const baseUrl = respuesta; // El QR ya debería contener la URL base
+    const contrasena = "CONGRESO_ADMON_2024X"; // La contraseña fija
+
+    // Agregar el parámetro de la contraseña a la URL
+    const fullUrl = `${baseUrl}&contrasena=${encodeURIComponent(contrasena)}`; 
+
+    // Redirigir al usuario a la URL completa
+    window.location.href = fullUrl; // Redirige a la URL para registrar la asistencia
   }
 };
-
-// Función para registrar la asistencia
-function registrarAsistencia(qrData) {
-  // Asegúrate de que la URL contenida en el QR esté en el formato correcto
-  const baseUrl = qrData; // El QR ya debería contener la URL base
-  const contrasena = "CONGRESO_ADMON_2024X"; // La contraseña fija
-
-  // Agregar el parámetro de la contraseña a la URL
-  const fullUrl = `${baseUrl}&contrasena=${encodeURIComponent(contrasena)}`; 
-
-  // Redirigir al usuario a la URL completa
-  window.location.href = fullUrl; // Redirige a la URL para registrar la asistencia
-}
 
 // Evento para encender la cámara al cargar la página
 window.addEventListener('load', (e) => {
