@@ -63,14 +63,26 @@ const activarSonido = () => {
 // Callback cuando termina de leer el código QR
 qrcode.callback = (respuesta) => {
   if (respuesta) {
-    // Mostrar el código QR escaneado
-    Swal.fire(respuesta);
+    // Mostrar el código QR escaneado (para verificar)
+    Swal.fire({
+      title: '¿Registrar asistencia?',
+      text: "¿Deseas registrar tu asistencia con este código QR?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Registrar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Si el usuario confirma, redirige con el parámetro de contraseña
+        registrarAsistencia(respuesta);
+      } else {
+        // Si cancela, apaga la cámara
+        cerrarCamara();
+      }
+    });
 
     // Reproducir el sonido de escaneo
     activarSonido();
-
-    // Redirigir al script de Google Apps con los datos escaneados
-    registrarAsistencia(respuesta);
 
     // Apagar la cámara después de escanear
     cerrarCamara();
@@ -79,9 +91,15 @@ qrcode.callback = (respuesta) => {
 
 // Función para registrar la asistencia
 function registrarAsistencia(qrData) {
-  const baseUrl = "https://script.google.com/macros/s/AKfycbx-Ug5HcF0lCEcbuDrrhmG7MOrkrpEuu3N0_2cUfI--YuHAx7GPCh3iGBqtjize-1iC2w/exec";
-  const fullUrl = `${baseUrl}&data=${qrData}`;
-  window.location.href = fullUrl; // Redirigir a la URL para registrar la asistencia
+  // Asegúrate de que la URL contenida en el QR esté en el formato correcto
+  const baseUrl = qrData; // El QR ya debería contener la URL base
+  const contrasena = "CONGRESO_ADMON_2024X"; // La contraseña fija
+
+  // Agregar el parámetro de la contraseña a la URL
+  const fullUrl = `${baseUrl}&contrasena=${encodeURIComponent(contrasena)}`; 
+
+  // Redirigir al usuario a la URL completa
+  window.location.href = fullUrl; // Redirige a la URL para registrar la asistencia
 }
 
 // Evento para encender la cámara al cargar la página
