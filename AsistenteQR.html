@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asistente para Tomar Asistencia</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    #scanButton, #registerButton {
+      padding: 15px 30px;
+      font-size: 18px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    #cameraView {
+      width: 100%;
+      max-width: 300px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bienvenido al asistente para tomar asistencia</h1>
+  <button id="scanButton">Escanear QR</button>
+  <video id="cameraView" autoplay hidden></video>
+  <button id="registerButton" hidden>Registrar</button>
+
+  <script>
+    const scanButton = document.getElementById('scanButton');
+    const registerButton = document.getElementById('registerButton');
+    const cameraView = document.getElementById('cameraView');
+
+    // Evento para abrir la cámara
+    scanButton.addEventListener('click', () => {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then((stream) => {
+          cameraView.srcObject = stream;
+          cameraView.hidden = false;
+          scanButton.hidden = true;
+          // Aquí podríamos añadir el escaneo de QR
+          // Por ahora simularemos un escaneo exitoso
+          setTimeout(() => {
+            // Simula el reconocimiento del QR después de 3 segundos
+            stream.getTracks().forEach(track => track.stop());
+            cameraView.hidden = true;
+            registerButton.hidden = false;
+          }, 3000); // Cambiar a reconocimiento real si se implementa
+        })
+        .catch((error) => {
+          alert('No se pudo acceder a la cámara: ' + error);
+        });
+    });
+
+    // Evento para el botón de registrar
+    registerButton.addEventListener('click', () => {
+      alert('Asistencia registrada');
+    });
+  </script>
+</body>
+</html>
