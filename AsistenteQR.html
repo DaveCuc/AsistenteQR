@@ -15,80 +15,103 @@
       font-family: Arial, sans-serif;
       text-align: center;
     }
-    #scanButton, #registerButton {
+    #btnScanQR, #registerButton {
       padding: 15px 30px;
       font-size: 18px;
       margin-top: 20px;
       cursor: pointer;
     }
-    #cameraView {
+    #qr-canvas {
       width: 100%;
       max-width: 300px;
       margin-top: 20px;
+      display: none;
     }
   </style>
+  <!-- Incluye la biblioteca de jsQR desde un CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 <body>
   <h1>Bienvenido al asistente para tomar asistencia</h1>
-  <button id="scanButton">Escanear QR</button>
-  <video id="cameraView" autoplay hidden></video>
+  <button id="btnScanQR">Escanear QR</button>
+  <canvas id="qr-canvas"></canvas>
   <button id="registerButton" hidden>Registrar</button>
 
-  <!-- Carga de jsQR desde CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-
   <script>
-    const scanButton = document.getElementById('scanButton');
-    const registerButton = document.getElementById('registerButton');
-    const cameraView = document.getElementById('cameraView');
-    
-    let qrData = ''; // Variable para almacenar los datos del QR
+    const video = document.createElement("video");
+    const canvasElement = document.getElementById("qr-canvas");
+    const canvas = canvasElement.getContext("2d");
+    const btnScanQR = document.getElementById("btnScanQR");
+    const registerButton = document.getElementById("registerButton");
+    let scanning = false;
+    let qrData = '';
 
-    // Evento para abrir la cámara y escanear el QR
-    scanButton.addEventListener('click', () => {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then((stream) => {
-          cameraView.srcObject = stream;
-          cameraView.hidden = false;
-          scanButton.hidden = true;
-
-          const scanQR = () => {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = cameraView.videoWidth;
-            canvas.height = cameraView.videoHeight;
-            context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
-            
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-            if (code) {
-              qrData = code.data; // Almacena los datos del QR escaneado
-              stream.getTracks().forEach(track => track.stop()); // Detiene la cámara
-              cameraView.hidden = true;
-              registerButton.hidden = false; // Muestra el botón de registrar después de escanear
-            } else {
-              requestAnimationFrame(scanQR); // Sigue escaneando hasta encontrar un QR
-            }
-          };
-
-          requestAnimationFrame(scanQR); // Inicia el proceso de escaneo
-        })
-        .catch((error) => {
-          alert('No se pudo acceder a la cámara: ' + error);
+    const encenderCamara = () => {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        .then(function (stream) {
+          scanning = true;
+          btnScanQR.hidden = true;
+          canvasElement.style.display = "block";
+          video.setAttribute("playsinline", true); // Requerido para evitar pantalla completa en Safari iOS
+          video.srcObject = stream;
+          video.play();
+          tick();
+          scan();
         });
-    });
+    };
+
+    // Actualiza el canvas con la imagen de video
+    function tick() {
+      canvasElement.height = video.videoHeight;
+      canvasElement.width = video.videoWidth;
+      canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+      scanning && requestAnimationFrame(tick);
+    }
+
+    // Intenta decodificar el QR en el canvas
+    function scan() {
+      try {
+        const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        if (code) {
+          qrData = code.data;
+          activarSonido();
+          Swal.fire("QR escaneado: " + qrData);
+          cerrarCamara();
+          registerButton.hidden = false; // Muestra el botón de registrar después de escanear
+        } else {
+          requestAnimationFrame(scan); // Sigue intentando escanear
+        }
+      } catch (e) {
+        setTimeout(scan, 300); // Reintenta después de un breve retardo
+      }
+    }
+
+    // Detiene la cámara y oculta el canvas
+    const cerrarCamara = () => {
+      video.srcObject.getTracks().forEach((track) => {
+        track.stop();
+      });
+      canvasElement.style.display = "none";
+      btnScanQR.hidden = false;
+      scanning = false;
+    };
+
+    // Activa un sonido al escanear
+    const activarSonido = () => {
+      const audio = new Audio('https://example.com/audio-scan.mp3');
+      audio.play();
+    };
+
+    // Evento para iniciar el escaneo al hacer clic en el botón
+    btnScanQR.addEventListener("click", encenderCamara);
 
     // Evento para el botón de registrar
     registerButton.addEventListener('click', () => {
-      // URL base de tu Google Apps Script
       const baseUrl = "https://script.google.com/macros/s/AKfycbx-Ug5HcF0lCEcbuDrrhmG7MOrkrpEuu3N0_2cUfI--YuHAx7GPCh3iGBqtjize-1iC2w/exec";
-      
-      // Construye la URL completa usando el valor del QR
       const fullUrl = `${baseUrl}&${qrData}`;
-      
-      // Redirige a la URL para registrar la asistencia
-      window.location.href = fullUrl;
+      window.location.href = fullUrl; // Redirige a la URL para registrar la asistencia
     });
   </script>
 </body>
