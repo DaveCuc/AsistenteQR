@@ -34,26 +34,45 @@
   <video id="cameraView" autoplay hidden></video>
   <button id="registerButton" hidden>Registrar</button>
 
+  <!-- Carga de jsQR desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
+
   <script>
     const scanButton = document.getElementById('scanButton');
     const registerButton = document.getElementById('registerButton');
     const cameraView = document.getElementById('cameraView');
+    
+    let qrData = ''; // Variable para almacenar los datos del QR
 
-    // Evento para abrir la cámara
+    // Evento para abrir la cámara y escanear el QR
     scanButton.addEventListener('click', () => {
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then((stream) => {
           cameraView.srcObject = stream;
           cameraView.hidden = false;
           scanButton.hidden = true;
-          // Aquí podríamos añadir el escaneo de QR
-          // Por ahora simularemos un escaneo exitoso
-          setTimeout(() => {
-            // Simula el reconocimiento del QR después de 3 segundos
-            stream.getTracks().forEach(track => track.stop());
-            cameraView.hidden = true;
-            registerButton.hidden = false;
-          }, 3000); // Cambiar a reconocimiento real si se implementa
+
+          const scanQR = () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = cameraView.videoWidth;
+            canvas.height = cameraView.videoHeight;
+            context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
+            
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+            if (code) {
+              qrData = code.data; // Almacena los datos del QR escaneado
+              stream.getTracks().forEach(track => track.stop()); // Detiene la cámara
+              cameraView.hidden = true;
+              registerButton.hidden = false;
+            } else {
+              requestAnimationFrame(scanQR); // Sigue escaneando hasta encontrar un QR
+            }
+          };
+
+          requestAnimationFrame(scanQR); // Inicia el proceso de escaneo
         })
         .catch((error) => {
           alert('No se pudo acceder a la cámara: ' + error);
@@ -62,7 +81,14 @@
 
     // Evento para el botón de registrar
     registerButton.addEventListener('click', () => {
-      alert('Asistencia registrada');
+      // URL base de tu Google Apps Script
+      const baseUrl = "https://script.google.com/macros/s/AKfycbx-Ug5HcF0lCEcbuDrrhmG7MOrkrpEuu3N0_2cUfI--YuHAx7GPCh3iGBqtjize-1iC2w/exec";
+      
+      // Construye la URL completa usando el valor del QR
+      const fullUrl = `${baseUrl}&${qrData}`;
+      
+      // Redirige a la URL para registrar la asistencia
+      window.location.href = fullUrl;
     });
   </script>
 </body>
