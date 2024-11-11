@@ -9,9 +9,27 @@
   <script src="assets/plugins/qrCode.min.js"></script> <!-- Asegúrate de que esta librería esté correctamente vinculada -->
 </head>
 <body>
+<center>
+  <table border="2" >
+    <tr>
+      <table>
+        <tr>
+          <th><img src="logoTECNM.png" alt="Logo 1" width="100"></th>
+        </tr>
+      </table>
+      
+    </tr>
+  </table>
+</center>
   <div class="row justify-content-center mt-5">
     <div class="col-sm-4 shadow p-3">
-      <h5 class="text-center">Escanear código QR</h5>
+      <h5 class="text-center">Asistente de Registro</h5>
+      <p>Bienvenido al Asistente para el Registro de Asistencia del Congreso</p>
+Para registrar la asistencia de los estudiantes, sigue estos pasos:
+<p>1. Escanea el Código QR (Puede tardar un momento)</p>
+<p>2. Verificación del Estudiante (El sistema comprobará automáticamente el código QR)</p>
+<p>3. Confirmación (Serás redirigido a otra página con la confirmación de registro)</p>
+
       <div class="row text-center">
         <a id="btn-scan-qr" href="#">
           <img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2017/07/1499401426qr_icon.svg" class="img-fluid text-center" width="175">
@@ -19,11 +37,26 @@
         <canvas hidden="" id="qr-canvas" class="img-fluid"></canvas>
       </div>
       <div class="row mx-5 my-3">
-        <button class="btn btn-success btn-sm rounded-3 mb-2" onclick="encenderCamara()">Escanear Asistencia</button>
+        <button class="btn btn-success btn-sm rounded-3 mb-2" onclick="encenderCamara()">Actualizar Scanner</button>
         <button class="btn btn-danger btn-sm rounded-3" onclick="cerrarCamara()">Cancelar</button>
       </div>
     </div>
   </div>
+
+  <center>
+    <table border="2" >
+      <tr>
+        <table>
+          <tr>
+            <th><img src="logoTECNM.png" alt="Logo 1" width="100"></th>
+            <th><img src="logoTECNM.png" alt="Logo 2" width="100"></th>
+            <th><img src="logoTECNM.png" alt="Logo 3" width="100"></th>
+          </tr>
+        </table>
+        
+      </tr>
+    </table>
+  </center>
   <audio id="audioScaner" src="assets/sonido.mp3"></audio> <!-- Asegúrate de tener el archivo de sonido -->
 
   <!-- Enlace al archivo JS externo -->
