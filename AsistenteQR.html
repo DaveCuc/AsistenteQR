@@ -3,116 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asistente para Tomar Asistencia</title>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    #btnScanQR, #registerButton {
-      padding: 15px 30px;
-      font-size: 18px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-    #qr-canvas {
-      width: 100%;
-      max-width: 300px;
-      margin-top: 20px;
-      display: none;
-    }
-  </style>
-  <!-- Incluye la biblioteca de jsQR desde un CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.js"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <title>Escanear código QR</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="assets/plugins/qrCode.min.js"></script> <!-- Asegúrate de que esta librería esté correctamente vinculada -->
 </head>
 <body>
-  <h1>Bienvenido al asistente para tomar asistencia</h1>
-  <button id="btnScanQR">Escanear QR</button>
-  <canvas id="qr-canvas"></canvas>
-  <button id="registerButton" hidden>Registrar</button>
+  <div class="row justify-content-center mt-5">
+    <div class="col-sm-4 shadow p-3">
+      <h5 class="text-center">Escanear código QR</h5>
+      <div class="row text-center">
+        <a id="btn-scan-qr" href="#">
+          <img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2017/07/1499401426qr_icon.svg" class="img-fluid text-center" width="175">
+        </a>
+        <canvas hidden="" id="qr-canvas" class="img-fluid"></canvas>
+      </div>
+      <div class="row mx-5 my-3">
+        <button class="btn btn-success btn-sm rounded-3 mb-2" onclick="encenderCamara()">Escanear Asistencia</button>
+        <button class="btn btn-danger btn-sm rounded-3" onclick="cerrarCamara()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  <audio id="audioScaner" src="assets/sonido.mp3"></audio> <!-- Asegúrate de tener el archivo de sonido -->
 
-  <script>
-    const video = document.createElement("video");
-    const canvasElement = document.getElementById("qr-canvas");
-    const canvas = canvasElement.getContext("2d");
-    const btnScanQR = document.getElementById("btnScanQR");
-    const registerButton = document.getElementById("registerButton");
-    let scanning = false;
-    let qrData = '';
-
-    const encenderCamara = () => {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(function (stream) {
-          scanning = true;
-          btnScanQR.hidden = true;
-          canvasElement.style.display = "block";
-          video.setAttribute("playsinline", true); // Requerido para evitar pantalla completa en Safari iOS
-          video.srcObject = stream;
-          video.play();
-          tick();
-          scan();
-        });
-    };
-
-    // Actualiza el canvas con la imagen de video
-    function tick() {
-      canvasElement.height = video.videoHeight;
-      canvasElement.width = video.videoWidth;
-      canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-      scanning && requestAnimationFrame(tick);
-    }
-
-    // Intenta decodificar el QR en el canvas
-    function scan() {
-      try {
-        const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-        const code = jsQR(imageData.data, imageData.width, imageData.height);
-        if (code) {
-          qrData = code.data;
-          activarSonido();
-          Swal.fire("QR escaneado: " + qrData);
-          cerrarCamara();
-          registerButton.hidden = false; // Muestra el botón de registrar después de escanear
-        } else {
-          requestAnimationFrame(scan); // Sigue intentando escanear
-        }
-      } catch (e) {
-        setTimeout(scan, 300); // Reintenta después de un breve retardo
-      }
-    }
-
-    // Detiene la cámara y oculta el canvas
-    const cerrarCamara = () => {
-      video.srcObject.getTracks().forEach((track) => {
-        track.stop();
-      });
-      canvasElement.style.display = "none";
-      btnScanQR.hidden = false;
-      scanning = false;
-    };
-
-    // Activa un sonido al escanear
-    const activarSonido = () => {
-      const audio = new Audio('https://example.com/audio-scan.mp3');
-      audio.play();
-    };
-
-    // Evento para iniciar el escaneo al hacer clic en el botón
-    btnScanQR.addEventListener("click", encenderCamara);
-
-    // Evento para el botón de registrar
-    registerButton.addEventListener('click', () => {
-      const baseUrl = "https://script.google.com/macros/s/AKfycbx-Ug5HcF0lCEcbuDrrhmG7MOrkrpEuu3N0_2cUfI--YuHAx7GPCh3iGBqtjize-1iC2w/exec";
-      const fullUrl = `${baseUrl}&${qrData}`;
-      window.location.href = fullUrl; // Redirige a la URL para registrar la asistencia
-    });
-  </script>
+  <!-- Enlace al archivo JS externo -->
+  <script src="assets/js/index.js"></script>
 </body>
 </html>
