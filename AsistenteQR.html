@@ -1,55 +1,202 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Escanear código QR</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="assets/plugins/qrCode.min.js"></script> <!-- Asegúrate de que esta librería esté correctamente vinculada -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escanear código QR</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    
+    
+    <style>
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #reader {
+            width: 600px;
+        }
+        #result {
+            text-align: center;
+            font-size: 1.5rem;
+        }
+    </style>
+
+
 </head>
-<body>
-  <div class="row justify-content-center mt-5">
-    <div class="col-sm-4 shadow p-3">
-      <h5 class="text-center">Asistente de Registro</h5>
-      <p>Bienvenido al Asistente para el Registro de Asistencia del Congreso</p>
-      <div class="row text-center">
-        <a id="btn-scan-qr" href="#">
-          <img src="https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2017/07/1499401426qr_icon.svg" class="img-fluid text-center" width="175">
-        </a>
-        <canvas hidden="" id="qr-canvas" class="img-fluid"></canvas>
-      </div>
-      <div class="row mx-5 my-3">
-        <button class="btn btn-success btn-sm rounded-3 mb-2" onclick="encenderCamara()">Actualizar Scanner</button>
-        <button class="btn btn-danger btn-sm rounded-3" onclick="cerrarCamara()">Cancelar</button>
-      </div>
-      
-<p>Para registrar la asistencia de los estudiantes, sigue estos pasos:</p>
-<p>1. Escanea el Código QR (Puede tardar un momento)</p>
-<p>2. Verificación del Estudiante (El sistema comprobará automáticamente el código QR)</p>
-<p>3. Confirmación (Serás redirigido a otra página con la confirmación de registro)</p>
+<body data-rsssl="1">
+    <center>
+    <h1 class="text-center">Asistente de Registro</h5>
+      <h3>Bienvenido al Asistente para el registro de asistencias del <br> 4to Congreso Internacional de Administración</h2>
+      <h2>"Administración Inteligente, Resultados Brillantes"</h2>
+    
 
-    </div>
-  </div>
 
-  <center>
-    <table border="2" >
-      <tr>
+
+<main>
+    
+    <div id="reader"></div>
+    <div id="result"></div>
+</main>
+
+<script>
+    // Configurar el escáner de QR
+    const scanner = new Html5QrcodeScanner('reader', {
+        qrbox: { width: 250, height: 250 },
+        fps: 20
+    });
+    scanner.render(success, error);
+
+    // Función de éxito al escanear
+    function success(result) {
+        // Llama a la función para agregar la contraseña y mostrar el mensaje de confirmación
+        registrarAsistencia(result);
+        scanner.clear();
+        document.getElementById('reader').remove();
+    }
+
+    // Función para registrar la asistencia con confirmación
+    function registrarAsistencia(qrData) {
+        // Agregar la contraseña al enlace del QR
+        const contrasena = "CONGRESO_ADMON_2024X";
+        const fullUrl = `${qrData}&contrasena=${encodeURIComponent(contrasena)}`;
+
+        // Mostrar mensaje de confirmación
+        if (window.confirm("¿Desea realizar el registro?")) {
+            // Si el usuario confirma, redirigir al enlace con la contraseña
+            window.location.href = fullUrl;
+        }
+    }
+
+    // Función de error al escanear
+    function error(err) {
+        console.error(err);
+    }
+</script>
+
+        <center>
+        <h4>Para registrar la asistencia de los estudiantes, escoge una camara y sigue estos pasos:</h4>
+        <p>1. Escanea el Código QR (Puede tardar un momento)</p>
+        <p>2. Verificación del Estudiante (El sistema comprobará automáticamente el código QR)</p>
+        <p>3. Confirmación (Serás redirigido a otra página con la confirmación de registro)</p>
+        </center>
+
+
+
+        <table>
+            <tr>
         <table>
           <tr>
-            <th><img src="logoTECNM.png" alt="Logo 1" width="100"></th>
-            <th><img src="logoTECNM.png" alt="Logo 2" width="100"></th>
-            <th><img src="logoTECNM.png" alt="Logo 3" width="100"></th>
+            <th style="width: 50%;"><img src="logoTECNM.png" alt="Logo 1" width="100"></th>
+            <th style="width: 0%;""><img src="image.jpg" alt="Logo 2" width="100"></th>
+            <th style="width: 50%;""><img src="tec.jpg" alt="Logo 3" width="100"></th>
           </tr>
         </table>
         
       </tr>
     </table>
   </center>
-  <audio id="audioScaner" src="assets/sonido.mp3"></audio> <!-- Asegúrate de tener el archivo de sonido -->
-
-  <!-- Enlace al archivo JS externo -->
-  <script src="assets/js/index.js"></script>
 </body>
 </html>
+
+</center>
+
+<style>
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f6f2;
+    color: #333;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Estilo del contenedor principal */
+main {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    display: flex;
+    justify-content: center;
+    
+}
+
+/* Estilo para el título */
+h1 {
+    font-size: 2rem;
+    color: #e24a4a;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el texto de párrafos */
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+    margin: 10px 0;
+}
+
+/* Estilos para el escáner QR */
+#reader {
+    width: 100%;
+    max-width: 400px;
+    border: 2px solid #e24a4a;
+    border-radius: 8px;
+}
+
+/* Estilo para el resultado */
+#result {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Estilos para el botón */
+button {
+    background-color: #e24a4a;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #bd3535;
+}
+
+button:active {
+    background-color: #a82c2c;
+}
+
+/* Estilo de enlace dentro de #result */
+#result a {
+    color: #e24a4a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#result a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo de h2 dentro del resultado */
+#result h2 {
+    color: #e24a4a;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+</style>

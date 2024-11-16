@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Escanear código QR</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js" integrity="sha512-k/KAe4Yff9EUdYI5/IAHlwUswqeipP+Cp5qnrsUjTPCgl51La2/JhyyjNciztD7mWNKLSXci48m7cctATKfLlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    
+    
     <style>
         main {
             display: flex;
@@ -20,10 +23,20 @@
             font-size: 1.5rem;
         }
     </style>
+
+
 </head>
 <body data-rsssl="1">
+    <center>
+    <h1 class="text-center">Asistente de Registro</h5>
+      <h3>Bienvenido al Asistente para el registro de asistencias del <br> 4to Congreso Internacional de Administración</h2>
+      <h2>"Administración Inteligente, Resultados Brillantes"</h2>
+    
+
+
 
 <main>
+    
     <div id="reader"></div>
     <div id="result"></div>
 </main>
@@ -63,5 +76,127 @@
     }
 </script>
 
+        <center>
+        <h4>Para registrar la asistencia de los estudiantes, escoge una camara y sigue estos pasos:</h4>
+        <p>1. Escanea el Código QR (Puede tardar un momento)</p>
+        <p>2. Verificación del Estudiante (El sistema comprobará automáticamente el código QR)</p>
+        <p>3. Confirmación (Serás redirigido a otra página con la confirmación de registro)</p>
+        </center>
+
+
+
+        <table>
+            <tr>
+        <table>
+          <tr>
+            <th style="width: 50%;"><img src="logoTECNM.png" alt="Logo 1" width="100"></th>
+            <th style="width: 0%;""><img src="image.jpg" alt="Logo 2" width="100"></th>
+            <th style="width: 50%;""><img src="tec.jpg" alt="Logo 3" width="100"></th>
+          </tr>
+        </table>
+        
+      </tr>
+    </table>
+  </center>
 </body>
 </html>
+
+</center>
+
+<style>
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f6f2;
+    color: #333;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Estilo del contenedor principal */
+main {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    display: flex;
+    justify-content: center;
+    
+}
+
+/* Estilo para el título */
+h1 {
+    font-size: 2rem;
+    color: #e24a4a;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el texto de párrafos */
+p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+    margin: 10px 0;
+}
+
+/* Estilos para el escáner QR */
+#reader {
+    width: 100%;
+    max-width: 400px;
+    border: 2px solid #e24a4a;
+    border-radius: 8px;
+}
+
+/* Estilo para el resultado */
+#result {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+/* Estilos para el botón */
+button {
+    background-color: #e24a4a;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #bd3535;
+}
+
+button:active {
+    background-color: #a82c2c;
+}
+
+/* Estilo de enlace dentro de #result */
+#result a {
+    color: #e24a4a;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#result a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo de h2 dentro del resultado */
+#result h2 {
+    color: #e24a4a;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+</style>
